@@ -25,7 +25,6 @@ public class PropertyResource {
 
     private Map<String, CountryBO> map;
 
-
     @PostConstruct
     public void init() {
         map.forEach((k, v) -> {
