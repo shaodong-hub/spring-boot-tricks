@@ -1,0 +1,39 @@
+
+项目地址：https://github.com/GoogleContainerTools/jib
+
+
+配置详解
+from：定义基础镜像，这里配置的私有仓库的jre镜像
+
+auth：仓库认证用户和密码配置
+
+to：目标镜像
+
+container：容器内的相关配置，比如spring boot项目main方法，jvm参数等
+
+插件命令使用
+
+mvn compile jib:buildTar ：这个命令将会构建镜像到磁盘上/targer/jib-image.tar,可以使用docker load --input target / jib-image.tar加载到docker中
+
+mvn compile  jib:dockerBuild : 构建镜像
+
+mvn compile  jib:build ：构建镜像并推送到镜像仓库
+
+mvn compile jib:exportDockerContext：如下图导出docker 构建所需的上下文到target/jib-docker-context目录，可以使用docker build -t myimage my/docker/context/构建
+
+
+集成插件生命周期
+
+在插件中添加如下，绑定到package阶段就可以使用mvn package来构建了
+```[java]
+<executions>
+    <execution>
+      <phase>package</phase>
+      <goals>
+        <goal>build</goal>
+      </goals>
+    </execution>
+  </executions>
+```
+
+

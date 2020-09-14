@@ -57,6 +57,57 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
+            <plugin>
+                <groupId>com.google.cloud.tools</groupId>
+                <artifactId>jib-maven-plugin</artifactId>
+                <version>2.5.2</version>
+                <configuration>
+                    <from>
+                        <image>registry.cn-hangzhou.aliyuncs.com/shishaodong/openjdk:8u265-jdk</image>
+                    </from>
+                    <to>
+                        <image>jib_test</image>
+                    </to>
+                    <outputPaths>
+                        <tar>target/jib-image.tar</tar>
+                    </outputPaths>
+                    <container>
+                        <jvmFlags>
+                            <jvmFlag>-Xms60m</jvmFlag>
+                            <jvmFlag>-Xmx60m</jvmFlag>
+                        </jvmFlags>
+                    </container>
+                </configuration>
+
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+<!--                            <goal>build</goal>-->
+                            <goal>buildTar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+
+                <!--                <configuration>-->
+                <!--                    <from>-->
+                <!--                        <image>openjdk:alpine</image>-->
+                <!--                    </from>-->
+                <!--                    <to>-->
+                <!--                        <image>${registry_url}/hec/${project.artifactId}:${project.version}-${ci_pipeline_id}</image>-->
+                <!--                        <auth>-->
+                <!--                            <username>${registry_username}</username>-->
+                <!--                            <password>${registry_password}</password>-->
+                <!--                        </auth>-->
+                <!--                    </to>-->
+                <!--                    <container>-->
+                <!--                        <jvmFlags>-->
+                <!--                            <jvmFlag>-Djava.security.edg=file:/dev/./urandom</jvmFlag>-->
+                <!--                        </jvmFlags>-->
+                <!--                    </container>-->
+                <!--                </configuration>-->
+
+            </plugin>
         </plugins>
     </build>
 
