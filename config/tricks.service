@@ -8,7 +8,7 @@ After=syslog.target
 [Service]
 User=apprun
 # 指定 jar 包路径
-ExecStart=/apprun/phoenix-waf-web/phoenix-waf-web.jar
+ExecStart=/apprun/tricks/tricks.jar
 SuccessExitStatus=143
 Restart=always
 PrivateTmp=true

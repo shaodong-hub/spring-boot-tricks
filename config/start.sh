@@ -1,35 +1,45 @@
 #!/bin/bash
 # --------------------------------------------------------------------------
 # 基本的配置
-# JAR 的名称
+# The name of the application
 app_name="tricks"
 # 当前工程的路径
-apprun_path="/apprun/tricks"
+apprun_path="/apprun/${app_name}"
 # 要更新的工程路径
-new_project_path="/apprun/tricks_v2"
+new_project_path=$(cd $(dirname "$0") || exit; pwd)
 # 其他配置
-format_date=$(date "+%Y-%m-%d")
+format_date=$(date "+%Y-%m-%d_%H:%M:%S")
 echo "current data: ${format_date}"
 # --------------------------------------------------------------------------
 # 代码自检
+bak_folder="/apprun/bak"
+if [ ! -d "$bak_folder" ]; then
+  echo "备份文件不存在，创建 $bak_folder...... "
+  mkdir "$bak_folder"
+  chown -R apprun:apprun "$bak_folder"
+fi
+# 代码自检
+if [ ! -d "${apprun_path}" ]; then
+  echo "${apprun_path} 目录不存在, 我猜是第一次部署 ...... "
+fi
 # --------------------------------------------------------------------------
 # 检查 /etc/systemd/system 目录下是否有 .service 文件, 没有就新建并赋予权限
 # 系统服务基础路径
 base_system_path="/etc/systemd/system/${app_name}.service"
 echo "systemd: ${base_system_path}"
-if [ ! -f ${new_project_path} ]; then
-  sudo cp ${apprun_path}/${app_name}.service ${base_system_path}
-  chmod 755 ${base_system_path}
-fi
+sudo cp "${new_project_path}"/${app_name}.service ${base_system_path}
+chmod 755 ${base_system_path}
 # --------------------------------------------------------------------------
 # 重命名管理平台并赋权限
 if [ $# == 0 ]; then
   echo "给新工程赋权限......"
-  chown -R apprun:apprun ${new_project_path}
-  chmod 755 ${new_project_path}/*
-  echo "备份旧文件......"
-  mv ${apprun_path} ${apprun_path}_"${format_date}"
-  mv ${new_project_path} ${apprun_path}
+  chown -R apprun:apprun "${new_project_path}"
+  chmod 755 "${new_project_path}"/*
+  if [ -d "${apprun_path}" ]; then
+    echo "备份旧文件......"
+    mv ${apprun_path} ${bak_folder}/${app_name}_"${format_date}"
+  fi
+  cp -r "${new_project_path}" ${apprun_path}
 fi
 # --------------------------------------------------------------------------
 # 开始更新管理平台
@@ -37,4 +47,8 @@ sudo systemctl daemon-reload
 sudo systemctl enable ${app_name}
 sudo systemctl restart ${app_name}
 echo "finish!............"
+echo "查看运行状态"
+sudo systemctl status ${app_name}
+mv "${new_project_path}" /tmp/${app_name}_$(date "+%Y-%m-%d_%H:%M:%S")
+tail -F /apprun/log/${app_name}/${app_name}.log
 
