@@ -10,7 +10,21 @@ new_project_path=$(cd $(dirname "$0") || exit; pwd)
 format_date=$(date "+%Y-%m-%d_%H:%M:%S")
 echo "current data: ${format_date}"
 # --------------------------------------------------------------------------
-# 代码自检
+# 文件自检
+if [ ! -f "${new_project_path}/${app_name}.jar" ]; then
+    echo "${new_project_path}/${app_name}.jar not found!"
+    exit
+fi
+if [ ! -f "${new_project_path}/${app_name}.conf" ]; then
+    echo "${new_project_path}/${app_name}.conf not found!"
+    exit
+fi
+if [ ! -f "${new_project_path}/application-prod.properties" ]; then
+    echo "${new_project_path}/application-prod.properties not found!"
+    exit
+fi
+# --------------------------------------------------------------------------
+# 文件夹自检
 bak_folder="/apprun/bak"
 if [ ! -d "$bak_folder" ]; then
   echo "bak folder not found, create $bak_folder...... "
@@ -30,6 +44,7 @@ if [ ! -f "${base_system_path}" ]; then
   echo "${base_system_path} not found, I guess it's the first deployment ...... "
   echo "move ${new_project_path}/${app_name}.service to ${base_system_path}"
   echo "chmod 755 ${base_system_path}"
+  exit
 #  sudo cp "${new_project_path}"/${app_name}.service ${base_system_path}
 #  chmod 755 ${base_system_path}
 fi
